@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public struct Question {
 	public string Text;
@@ -95,6 +96,11 @@ public class PlayerScript : MonoBehaviour {
 	private int currentQuestion;
 
 	/// <summary>
+	/// How many lifes does the player have?
+	/// </summary>
+	private int lifes;
+
+	/// <summary>
 	/// Score
 	/// </summary>
 	private int _score;
@@ -135,6 +141,8 @@ public class PlayerScript : MonoBehaviour {
 		sprite = transform.FindChild ("PlayerSprite").gameObject;
 
 		CurrentPlayer = this;
+
+		lifes = 0;
 	}
 
 	void OnDestroy() {
@@ -173,6 +181,12 @@ public class PlayerScript : MonoBehaviour {
 		ObstacleGeneratorScript.CurrentObstacleGenerator.Reset ();
 
 		Reset ();
+
+		lifes--;
+		if (lifes < 0) {
+			MenuController.CurrentScore = Score;
+			SceneManager.LoadScene ("Highscore");
+		}
 	}
 
 	void Reset() {
@@ -183,7 +197,6 @@ public class PlayerScript : MonoBehaviour {
 		disableControl = false;
 		transform.eulerAngles = Vector3.zero;
 		currentQuestion = 0;
-		Score = 0;
 		Shuffle (shuffledQuestions);
 	}
 
