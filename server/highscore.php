@@ -32,7 +32,7 @@ function getResponse($db) {
   $sql = <<<SQL
   select name, score
   from highscore
-  order by score asc
+  order by score desc
   limit 10
 SQL;
   if (!$dbResult = $db->query($sql)) {

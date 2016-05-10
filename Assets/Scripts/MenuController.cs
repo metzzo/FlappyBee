@@ -72,7 +72,7 @@ public class MenuController : MonoBehaviour {
 			Destroy (entry);
 		}
 			
-		var pos = -130;
+		var pos = 0;
 		foreach (var score in highscore.highscore) {
 			var newObj = Instantiate(HighscoreEntryTemplate);
 			newObj.transform.SetParent (ListPanel.transform, false);
@@ -84,7 +84,7 @@ public class MenuController : MonoBehaviour {
 			vec.y += pos;
 			newObj.GetComponent<RectTransform>().position = vec;
 			ListEntries.Add (newObj);
-			pos += 80;
+			pos -= 80;
 		}
 	}
 
@@ -100,7 +100,7 @@ public class MenuController : MonoBehaviour {
 		if (CurrentScore > -1) {
 			var form = new WWWForm ();
 			form.AddField ("score", CurrentScore);
-			form.AddField ("name", "Robert");
+			form.AddField ("name", NameField.text);
 			WWW www = new WWW (URL, form);
 			yield return www;
 
