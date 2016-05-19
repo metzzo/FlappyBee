@@ -71,28 +71,28 @@ public class MenuController : MonoBehaviour {
 		foreach (var entry in ListEntries) {
 			Destroy (entry);
 		}
-			
-		var pos = 0;
+
+		var panel = ListPanel.transform.Find ("ContentPanel");
 		foreach (var score in highscore.highscore) {
 			var newObj = Instantiate(HighscoreEntryTemplate);
-			newObj.transform.SetParent (ListPanel.transform, false);
+			newObj.transform.SetParent (panel, false);
 
 			newObj.transform.FindChild("Name").GetComponent<Text>().text = score.name;
 			newObj.transform.FindChild("Score").GetComponent<Text>().text = "" + score.score;
-
-			var vec = newObj.GetComponent<RectTransform>().position;
-			vec.y += pos;
-			newObj.GetComponent<RectTransform>().position = vec;
 			ListEntries.Add (newObj);
-			pos -= 80;
+
 		}
 	}
 
 	public void PlayGame() {
+		GetComponent<AudioSource> ().Play ();
+
 		SceneManager.LoadScene ("Main");
 	}
 
 	void SubmitHighscore() {
+		GetComponent<AudioSource> ().Play ();
+
 		StartCoroutine ("DoSubmitHighscore");
 	}
 

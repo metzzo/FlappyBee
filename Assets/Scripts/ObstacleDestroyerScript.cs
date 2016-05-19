@@ -11,7 +11,7 @@ public class ObstacleDestroyerScript : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D coll) {
-		if (coll.gameObject.tag == "Obstacle") {
+		if (coll.gameObject.tag == "Obstacle" || coll.gameObject.tag == "Cloud") {
 			Debug.Log ("Destroy! " + coll.gameObject.name);
 			Destroy (coll.transform.parent.gameObject);
 		}

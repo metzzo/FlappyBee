@@ -24,25 +24,24 @@ public struct Question {
 public class PlayerScript : MonoBehaviour {
 	private static Question[] questions = new Question[] {
 		new Question("How many keys does a keyboard have?", "84 keys", "101 keys"),
-		new Question("When was Google founded in September?", "4", "3"),
+		new Question("When was Google founded?", "4. September, 1998", "3. September, 1997"),
 		new Question("When was the first video uploaded on youtube?", "April 23, 2005", "April 23, 2006"),
-		new Question("What is the first name of a computer?", "ENIAC", "Mainframe"),
+		new Question("What was the name of the first computer?", "ENIAC", "Mainframe"),
 		new Question("1 TiB is ...", "1,048,576 MB", "1,000,000 MB"),
-		new Question("8 Bit is...", "1 byte", "1 kb"),
+		new Question("8 Bit is ...", "1 byte", "1 kb"),
 		new Question("Basics colors of a screen are ...", "Red Green Blue", "Yellow Pink Black"),
 		new Question("4K is ...", "2 times 1080p", "4 times 1080p"),
 		new Question("What color represents facebook? ", "Blue", "Green"),
-		new Question("Are ads useful to the user?", "No", "Yes"),
-		new Question("What are cookies in computers?", "buiscuits", "data files"),
-		new Question("What is DNS?", "Domain Name System", "Data Name System"),
-		new Question("Quick Charge  technology now days is?", "3.0 A", "2.0 A"),
-		new Question("Android at the beginning of 2016 launched the", "Android N", "Android M"),
-		new Question("Linux is a open source operating system", "Yes", "No"),
-		new Question("Which of the systems require more performance to run?", "Windows", "Linux"),
-		new Question("The energy in a sound wave can be measured using ", "Decibels", "Megapixles"),
-		new Question("Battery is measured  using", "mah", "meh"),
-		new Question("Performance of a supercomputer is usually measured in", "FLOPS", "MIPS"),
-		new Question("Internet speed measurement unit?", "Mbps", "Mp")
+		new Question("What are cookies in computers?", "data files", "biscuits"),
+		new Question("What is a DNS on a server?", "Domain Name System", "Data Name System"),
+		new Question("Quick Charge  technology nowadays is?", "3.0 A", "2.0 A"),
+		new Question("Android at the beginning of 2016 launched... ", "Android N", "Android M"),
+		new Question("Linux is an open source operating system?", "Yes", "No"),
+		new Question("Which of the systems is closed source?", "Windows", "Linux"),
+		new Question("The energy in a sound wave can be measured using... ", "Decibels", "Megapixles"),
+		new Question("Battery is measured  using... ", "mah", "meh"),
+		new Question("Performance of a supercomputer is usually measured in... ", "FLOPS", "MIPS"),
+		new Question("What is the internet speed measurement unit? ", "Mbps", "Mp")
 	};
 
 	/// <summary>
@@ -81,11 +80,6 @@ public class PlayerScript : MonoBehaviour {
 	private bool disableControl;
 
 	/// <summary>
-	/// Sprite GameObject
-	/// </summary>
-	private GameObject sprite;
-
-	/// <summary>
 	/// List of all questions
 	/// </summary>
 	private List<Question> shuffledQuestions;
@@ -99,6 +93,17 @@ public class PlayerScript : MonoBehaviour {
 	/// How many lifes does the player have?
 	/// </summary>
 	private int lifes;
+
+	/// <summary>
+	/// Sound played on start
+	/// </summary>
+	public AudioSource StartSound;
+
+
+	/// <summary>
+	/// Sound played on success
+	/// </summary>
+	public AudioSource SuccessSound;
 
 	/// <summary>
 	/// Score
@@ -134,11 +139,7 @@ public class PlayerScript : MonoBehaviour {
 		Reset ();
 
 		var cam = Camera.main;
-		cam.transform.position = cam.ScreenToWorldPoint (new Vector3 (0, cam.pixelHeight / 2, -45));
-
 		cam.transform.SetParent (FollowStub.transform);
-
-		sprite = transform.FindChild ("PlayerSprite").gameObject;
 
 		CurrentPlayer = this;
 
@@ -167,7 +168,14 @@ public class PlayerScript : MonoBehaviour {
 		FollowStub.transform.position = stubPos;
 	}
 
+	private bool skipFirst = true;
+
 	void OnCollisionEnter2D(Collision2D coll) {
+		if (skipFirst) {
+			skipFirst = false;
+		} else {
+			GetComponent<AudioSource> ().Play ();
+		}
 		if (coll.gameObject.tag == "Obstacle" && !disableControl) {
 			Debug.Log ("Disable Control! " + coll.gameObject.name);
 			disableControl = true;
@@ -178,7 +186,9 @@ public class PlayerScript : MonoBehaviour {
 		Debug.Log ("Die");
 
 		// delete all Obstacles
-		ObstacleGeneratorScript.CurrentObstacleGenerator.Reset ();
+		if (ObstacleGeneratorScript.CurrentObstacleGenerator != null) {
+			ObstacleGeneratorScript.CurrentObstacleGenerator.Reset ();
+		}
 
 		Reset ();
 
@@ -198,12 +208,15 @@ public class PlayerScript : MonoBehaviour {
 		transform.eulerAngles = Vector3.zero;
 		currentQuestion = 0;
 		Shuffle (shuffledQuestions);
+
+		StartSound.Play ();
 	}
 
 	public void PassesThrough(bool isCorrect) {
 		Debug.Log ("Passes thorugh " + isCorrect);
 		if (isCorrect) {
 			Score++;
+			SuccessSound.Play ();
 		} else {
 			disableControl = true;
 		}
