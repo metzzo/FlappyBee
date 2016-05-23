@@ -19,10 +19,9 @@ public class BackgroundManager : MonoBehaviour {
 
 		Reposition ();
 	}
-
+	  
 	void Update () {
 		if (!bg1.GetComponent<Renderer> ().isVisible) {
-			return;  
 			if (!first) {
 				first = true;
 			} else {
